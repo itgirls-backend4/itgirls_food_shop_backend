@@ -12,6 +12,8 @@ import ru.Product.repository.OrderRepository;
 import ru.Product.repository.ProductRepository;
 import ru.Product.service.CartService;
 import ru.Product.service.OrderService;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,39 +29,40 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderGetAllDto> getAllOrdersByUserId(UUID id) {
-//        log.info("Попытка получить список заказов по user_id {}", id);
-//        List<Order> orders = orderRepository.findAllByUserId(id);
-//        List<OrderGetAllDto> orderDtoList = new ArrayList<>();
-//
-//        for (Order order : orders) {
-//            log.info("Статус заказа с id {}: {}", order.getId(), order.getStatus());
-//            OrderGetAllDto orderDto = new OrderGetAllDto();
-//            orderDto.setId(order.getId());
-//
-//            // Преобразуем список продуктов Order в список ProductDto
-//            List<ProductDto> productDtoList = order.getProduct().stream()
-//                    .map(this::convertToProductDto)
-//                    .collect(Collectors.toList());
-//
-//            orderDto.setProduct(productDtoList);
-//            orderDto.setDateTime(order.getDateTime());
-//            orderDto.setTotalPrice(order.getTotalPrice());
-//            orderDto.setStatus(order.getStatus());
-//            orderDto.setUser(UserDto.builder()
-//                    .id(order.getUser().getId())
-//                    .name(order.getUser().getName())
-//                    .email(order.getUser().getEmail())
-//                    .phone(order.getUser().getPhone())
-//                    .address(order.getUser().getAddress())
-//                    .password(order.getUser().getPassword())
-//                    .build());
-//
-//            orderDtoList.add(orderDto);
-//        }
-//
-//        return orderDtoList;
-        return null;
+        log.info("Попытка получить список заказов по user_id {}", id);
+        List<Order> orders = orderRepository.findAllByUserId(id);
+        List<OrderGetAllDto> orderDtoList = new ArrayList<>();
+
+        for (Order order : orders) {
+            log.info("Статус заказа с id {}: {}", order.getId(), order.getStatus());
+            OrderGetAllDto orderDto = new OrderGetAllDto();
+            orderDto.setId(order.getId());
+
+            // Преобразуем список продуктов Order в список ProductDto
+            List<ProductDto> productDtoList = order.getOrderedProducts().stream()
+                    .map(orderedProduct -> convertToProductDto(orderedProduct.getProduct()))
+                    .collect(Collectors.toList());
+
+            orderDto.setProduct(productDtoList);
+            orderDto.setDateTime(order.getDateTime());
+            orderDto.setTotalPrice(BigDecimal.valueOf(order.getTotalPrice()));
+            orderDto.setStatus(order.getStatus());
+            orderDto.setUser(UserDto.builder()
+                    .id(order.getUser().getId())
+                    .name(order.getUser().getName())
+                    .email(order.getUser().getEmail())
+                    .phone(order.getUser().getPhone())
+                    .address(order.getUser().getAddress())
+                    .password(order.getUser().getPassword())
+                    .build());
+
+            orderDtoList.add(orderDto);
+        }
+
+        return orderDtoList;
     }
+
+
 
     @Override
     public List<OrderGetAllDto> getAllOrders() {
