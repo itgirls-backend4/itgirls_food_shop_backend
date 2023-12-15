@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderGetAllDto> getAllOrdersByUserId(UUID id) {
-        log.info("Попытка получить список заказов по user_id {}", id);
+        log.info("Поиск всех заказов пользователя с id {}", id);
         List<Order> orders = orderRepository.findAllByUserId(id);
         List<OrderGetAllDto> orderDtoList = new ArrayList<>();
 
