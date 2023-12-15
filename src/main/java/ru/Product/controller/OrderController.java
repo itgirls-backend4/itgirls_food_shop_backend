@@ -22,7 +22,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("getOrders")
+    @GetMapping("getAllOrderByUserId")
     @Operation(summary = "Получение всех заказов пользователя по id")
     public List<OrderGetAllDto> getAllOrderByUserId(
             @Parameter(description = "id пользователя", required = true) @RequestParam(value = "id") String id
@@ -32,7 +32,7 @@ public class OrderController {
 
     @GetMapping("/getAllOrders")
     @Operation(summary = "Получение всех заказов в БД")
-    public List<OrderGetAllDto> getAllOrder() {
+    public List<OrderGetAllDto> getAllOrders() {
         return orderService.getAllOrders();
     }
 
