@@ -3,6 +3,7 @@ package ru.Product.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import ru.Product.dto.*;
 import ru.Product.model.Category;
 import ru.Product.model.Order;
@@ -10,12 +11,14 @@ import ru.Product.model.Product;
 import ru.Product.model.User;
 import ru.Product.repository.OrderRepository;
 import ru.Product.repository.ProductRepository;
+import ru.Product.repository.UserRepository;
 import ru.Product.service.CartService;
 import ru.Product.service.OrderService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -26,18 +29,18 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<OrderGetAllDto> getAllOrdersByUserId(UUID id) {
         log.info("Поиск всех заказов пользователя с id: {}", id);
-        List<Order> orders;
-        if (id == null) {
-            orders = orderRepository.findAll();
-        } else {
-            orders = orderRepository.findAllByUserId(id);
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            log.error("Пользователь не найден с id: {}", id);
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
+        List<Order> orders = orderRepository.findAllByUserId(id);
         List<OrderGetAllDto> orderDtoList = new ArrayList<>();
-
         for (Order order : orders) {
             log.info("Статус заказа с id {}: {}", order.getId(), order.getStatus());
             OrderGetAllDto orderDto = new OrderGetAllDto();
@@ -47,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
             List<ProductDto> productDtoList = order.getOrderedProducts().stream()
                     .map(orderedProduct -> convertToProductDto(orderedProduct.getProduct()))
                     .collect(Collectors.toList());
-
             orderDto.setProduct(productDtoList);
             orderDto.setDateTime(order.getDateTime());
             orderDto.setTotalPrice(BigDecimal.valueOf(order.getTotalPrice()));
@@ -60,10 +62,8 @@ public class OrderServiceImpl implements OrderService {
                     .address(order.getUser().getAddress())
                     .password(order.getUser().getPassword())
                     .build());
-
             orderDtoList.add(orderDto);
         }
-
         return orderDtoList;
     }
 
