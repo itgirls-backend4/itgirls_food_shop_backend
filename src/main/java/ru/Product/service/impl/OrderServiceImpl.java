@@ -43,31 +43,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderGetAllDto> orderDtoList = new ArrayList<>();
         for (Order order : orders) {
             log.info("Статус заказа с id {}: {}", order.getId(), order.getStatus());
-            OrderGetAllDto orderDto = new OrderGetAllDto();
-            orderDto.setId(order.getId());
-
-            // Преобразуем список продуктов Order в список ProductDto
-            List<OrderedProductDto> productDtoList = order.getOrderedProducts().stream()
-                    .map(orderedProduct -> OrderedProductDto
-                            .builder()
-                            .productId(orderedProduct.getProduct().getId())
-                            .name(orderedProduct.getName())
-                            .price(orderedProduct.getPrice())
-                            .quantity(orderedProduct.getQuantity())
-                            .build())
-                    .collect(Collectors.toList());
-            orderDto.setOrderedProducts(productDtoList);
-            orderDto.setDateTime(order.getDateTime());
-            orderDto.setTotalPrice(BigDecimal.valueOf(order.getTotalPrice()));
-            orderDto.setStatus(order.getStatus());
-            orderDto.setUser(UserDto.builder()
-                    .id(order.getUser().getId())
-                    .name(order.getUser().getName())
-                    .email(order.getUser().getEmail())
-                    .phone(order.getUser().getPhone())
-                    .address(order.getUser().getAddress())
-                    .password(order.getUser().getPassword())
-                    .build());
+            OrderGetAllDto orderDto = convertOrderToProductDto(order);
             orderDtoList.add(orderDto);
         }
         return orderDtoList;
@@ -165,9 +141,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderGetAllDto convertOrderToProductDto(Order order) {
+        OrderGetAllDto orderDto = new OrderGetAllDto();
+        orderDto.setId(order.getId());
 
+        List<OrderedProductDto> productDtoList = order.getOrderedProducts().stream()
+                .map(orderedProduct -> OrderedProductDto
+                        .builder()
+                        .productId(orderedProduct.getProduct().getId())
+                        .name(orderedProduct.getName())
+                        .price(orderedProduct.getPrice())
+                        .quantity(orderedProduct.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+        orderDto.setOrderedProducts(productDtoList);
+        orderDto.setDateTime(order.getDateTime());
+        orderDto.setTotalPrice(BigDecimal.valueOf(order.getTotalPrice()));
+        orderDto.setStatus(order.getStatus());
+        orderDto.setUser(UserDto.builder()
+                .id(order.getUser().getId())
+                .name(order.getUser().getName())
+                .email(order.getUser().getEmail())
+                .phone(order.getUser().getPhone())
+                .address(order.getUser().getAddress())
+                .password(order.getUser().getPassword())
+                .build());
+        return orderDto;
     }
 
 }
-
-
