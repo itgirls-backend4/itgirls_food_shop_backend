@@ -47,10 +47,16 @@ public class OrderServiceImpl implements OrderService {
             orderDto.setId(order.getId());
 
             // Преобразуем список продуктов Order в список ProductDto
-            List<ProductDto> productDtoList = order.getOrderedProducts().stream()
-                    .map(orderedProduct -> convertToProductDto(orderedProduct.getProduct()))
+            List<OrderedProductDto> productDtoList = order.getOrderedProducts().stream()
+                    .map(orderedProduct -> OrderedProductDto
+                            .builder()
+                            .productId(orderedProduct.getProduct().getId())
+                            .name(orderedProduct.getName())
+                            .price(orderedProduct.getPrice())
+                            .quantity(orderedProduct.getQuantity())
+                            .build())
                     .collect(Collectors.toList());
-            orderDto.setProduct(productDtoList);
+            orderDto.setOrderedProducts(productDtoList);
             orderDto.setDateTime(order.getDateTime());
             orderDto.setTotalPrice(BigDecimal.valueOf(order.getTotalPrice()));
             orderDto.setStatus(order.getStatus());
@@ -156,6 +162,10 @@ public class OrderServiceImpl implements OrderService {
                 .name(category.getName())
                 .image(category.getImage())
                 .build();
+    }
+
+    private OrderGetAllDto convertOrderToProductDto(Order order) {
+
     }
 
 }
