@@ -13,6 +13,7 @@ import ru.Product.model.*;
 import ru.Product.repository.*;
 import ru.Product.service.CartService;
 import ru.Product.service.OrderService;
+import ru.Product.service.ProductService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDtoMapper orderDtoMapper;
     private final CartService cartService;
     private final OrderStatusRepository orderStatusRepository;
+    private final ProductService productService;
 
 
     @Override
@@ -186,6 +188,23 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public void updateOrderStatus(UUID orderId, OrderStatus statusName) {
+        log.info("Изменение статуса заказа с id {} на статус {}", orderId, statusName);
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            String previousStatus = String.valueOf(order.getStatus());
+            order.setStatus(statusName);
+            orderRepository.save(order);
+            log.info("Статус заказа с id {} изменен на {}", orderId, statusName);
+            if (previousStatus.equals("Собран") && statusName.equals("Доставлен")) {
+                productService.purchase(order); //TODO: проверить после реализации метода purchase
+            }
+        } else {
+            throw new NotFoundException("Заказ с id " + orderId + " не найден");
+        }
+    }
 
     private Set<OrderedProduct> getOrderedProducts(Cart cart, Order order) {
         log.info("Определение продуктов из корзины");

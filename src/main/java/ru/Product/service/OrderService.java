@@ -3,6 +3,7 @@ package ru.Product.service;
 import ru.Product.dto.OrderDto;
 import ru.Product.dto.OrderGetAllDto;
 import ru.Product.model.Order;
+import ru.Product.model.OrderStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,5 +23,5 @@ public interface OrderService {
 
     void removeProductFromOrder(UUID orderId, UUID productId);
 
-
+    void updateOrderStatus(UUID orderId, OrderStatus statusName);
 }
