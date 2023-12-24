@@ -187,7 +187,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(UUID orderId, OrderStatus status) {}
+    public void updateOrderStatus(UUID orderId, OrderStatus statusName) {
+        log.info("Изменение статуса заказа с id {} на статус {}", orderId, statusName);
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+    }
 
     private Set<OrderedProduct> getOrderedProducts(Cart cart, Order order) {
         log.info("Определение продуктов из корзины");
