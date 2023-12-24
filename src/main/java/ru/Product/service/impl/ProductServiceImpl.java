@@ -1,5 +1,6 @@
 package ru.Product.service.impl;
 
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -90,11 +91,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductCreateDto productCreateDto) {
         log.info("Создание нового продукта: {}", productCreateDto);
-        Product newProduct = convertToProductEntity(productCreateDto);
-        Product savedProduct = productRepository.save(newProduct);
-        Category category = savedProduct.getCategory();
-        log.info("Продукт создан: {}", savedProduct);
-        return convertToProductDto(savedProduct, category);
+        String name = productCreateDto.getName();
+        Product optionalProduct = productRepository.findByName(name);
+        if (optionalProduct != null)
+            throw new EntityExistsException("Product with name " + name + " already  exists");
+        else {
+            Category optionalCategory = categoryRepository.findByName(productCreateDto.getCategoryName());
+            if (optionalCategory==null)
+                throw new NotFoundException("Category with name " + name + " not found");
+                else{
+                    Product newProduct = convertToProductEntity(productCreateDto);
+                    Product savedProduct = productRepository.save(newProduct);
+                    Category category = savedProduct.getCategory();
+                    log.info("Продукт создан: {}", savedProduct);
+                    return convertToProductDto(savedProduct, category);
+    }}
     }
 
     @Override
@@ -102,22 +113,32 @@ public class ProductServiceImpl implements ProductService {
         log.info("Обновление информации о продукте с id: {}", productId);
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
-            log.info("Найден существующий продукт: {}", existingProduct);
-            existingProduct.setName(productUpdateDto.getName());
-            existingProduct.setCategory(categoryRepository.findByName(productUpdateDto.getCategoryName()));
-            existingProduct.setDescription(productUpdateDto.getDescription());
-            existingProduct.setPrice(productUpdateDto.getPrice());
-            existingProduct.setQuantity(productUpdateDto.getQuantity());
-            existingProduct.setImage(productUpdateDto.getImage());
-            Product updatedProduct = productRepository.save(existingProduct);
-            log.info("Продукт обновлён: {}", updatedProduct);
-            Category category = existingProduct.getCategory();
-            return convertToProductDto(updatedProduct, category);
-        } else {
-            log.error("Продукт не найден с id: {}", productId);
-            throw new NotFoundException("Продукт не найден с id: " + productId);
-        }
+            String newNameProduct = productUpdateDto.getName();
+            Product foundProduct = productRepository.findByName(newNameProduct);
+            if (foundProduct != null)
+                throw new EntityExistsException("Product with name " + newNameProduct + " already  exists");
+            else {
+                Category optionalCategory = categoryRepository.findByName(productUpdateDto.getCategoryName());
+                if (optionalCategory==null)
+                    throw new NotFoundException("Category with name " + productUpdateDto.getCategoryName() + " not found");
+                else {
+                    Product existingProduct = optionalProduct.get();
+                    log.info("Найден существующий продукт: {}", existingProduct);
+                    existingProduct.setName(productUpdateDto.getName());
+                    existingProduct.setCategory(categoryRepository.findByName(productUpdateDto.getCategoryName()));
+                    existingProduct.setDescription(productUpdateDto.getDescription());
+                    existingProduct.setPrice(productUpdateDto.getPrice());
+                    existingProduct.setQuantity(productUpdateDto.getQuantity());
+                    existingProduct.setImage(productUpdateDto.getImage());
+                    Product updatedProduct = productRepository.save(existingProduct);
+                    log.info("Продукт обновлён: {}", updatedProduct);
+                    Category category = existingProduct.getCategory();
+                    return convertToProductDto(updatedProduct, category);
+                }}
+            } else {
+                log.error("Продукт не найден с id: {}", productId);
+                throw new NotFoundException("Продукт не найден с id: " + productId);
+            }
     }
 
     @Override

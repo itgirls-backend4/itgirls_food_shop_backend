@@ -2,6 +2,7 @@ package ru.Product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
@@ -31,13 +33,15 @@ public class ProductCreateDto {
     @Schema(requiredMode = REQUIRED, description = "Описание продукта")
     private String description;
 
-    @NotBlank(message = "Необходимо указать цену продукта")
+    @NotNull(message = "Необходимо указать цену продукта")
     @Schema(requiredMode = REQUIRED, description = "Цена")
     private BigDecimal price;
 
-    @NotBlank(message = "Необходимо указать количество продукта")
+//    @NotNull(message = "Необходимо указать количество продукта")
+//    @Schema( description = "Количество")
     @Schema(requiredMode = REQUIRED, description = "Количество")
     private Integer quantity;
+//    private BigInteger quantity;
 
     @Schema(requiredMode = NOT_REQUIRED, description = "Изображение")
     private String image;
