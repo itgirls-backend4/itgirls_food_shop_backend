@@ -81,8 +81,8 @@ public class OrderController {
     @Operation(summary = "Изменение статуса заказа")
     public void updateOrderStatus(
             @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
-            @Parameter(description = "статус заказа", required = true) @RequestParam(value = "statusName") Map<String, String> statusName
+            @Parameter(description = "статус заказа", required = true) @RequestParam(value = "statusName") OrderStatus statusName
             ) {
-
+        orderService.updateOrderStatus(UUID.fromString(orderId), statusName);
     }
 }
