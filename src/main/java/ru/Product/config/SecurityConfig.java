@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/order/updateProductQuantityInOrder").hasAnyRole("ADMIN", "STAFF")
                                 .requestMatchers("/api/v1/order/addProductToOrder").hasAnyRole("ADMIN", "STAFF")
                                 .requestMatchers("/api/v1/order/removeProductFromOrder").hasAnyRole("ADMIN", "STAFF")
+                                .requestMatchers("/api/v1/order/updateOrderStatus").hasAnyRole("ADMIN", "STAFF")
 
                                 .requestMatchers("api/name/orderStatus/{name}").hasAnyRole("ADMIN", "STAFF")
                                 .requestMatchers("api/name/orderStatus/getAll").hasAnyRole("ADMIN", "STAFF")
