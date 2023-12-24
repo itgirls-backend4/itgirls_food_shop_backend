@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.Product.dto.OrderDto;
 import ru.Product.dto.OrderGetAllDto;
+import ru.Product.model.OrderStatus;
 import ru.Product.service.OrderService;
 
 import java.util.List;
@@ -77,5 +78,10 @@ public class OrderController {
 
     @PatchMapping("/updateOrderStatus")
     @Operation(summary = "Изменение статуса заказа")
-    public void updateOrderStatus() {}
+    public void updateOrderStatus(
+            @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
+            @Parameter(description = "статус заказа", required = true) @RequestParam(value = "statusName")OrderStatus statusName
+            ) {
+
+    }
 }
