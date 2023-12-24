@@ -11,6 +11,7 @@ import ru.Product.model.OrderStatus;
 import ru.Product.service.OrderService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -80,7 +81,7 @@ public class OrderController {
     @Operation(summary = "Изменение статуса заказа")
     public void updateOrderStatus(
             @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
-            @Parameter(description = "статус заказа", required = true) @RequestParam(value = "statusName")OrderStatus statusName
+            @Parameter(description = "статус заказа", required = true) @RequestParam(value = "statusName") Map<String, String> statusName
             ) {
 
     }
