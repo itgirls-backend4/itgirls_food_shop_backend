@@ -74,4 +74,8 @@ public class OrderController {
     ) {
         orderService.removeProductFromOrder(UUID.fromString(orderId), UUID.fromString(productId));
     }
+
+    @PatchMapping("/updateOrderStatus")
+    @Operation(summary = "Изменение статуса заказа")
+    public void updateOrderStatus() {}
 }
