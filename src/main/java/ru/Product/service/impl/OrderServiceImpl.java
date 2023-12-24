@@ -190,6 +190,12 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderStatus(UUID orderId, OrderStatus statusName) {
         log.info("Изменение статуса заказа с id {} на статус {}", orderId, statusName);
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            String previousStatus = String.valueOf(order.getStatus());
+            order.setStatus(statusName);
+            orderRepository.save(order);
+        }
     }
 
     private Set<OrderedProduct> getOrderedProducts(Cart cart, Order order) {
