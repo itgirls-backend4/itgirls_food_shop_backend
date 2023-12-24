@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
             OrderGetAllDto orderDto = convertOrderToProductDto(order);
             orderDtoList.add(orderDto);
 
-            }
+        }
         return orderDtoList;
     }
 
@@ -189,20 +189,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(UUID orderId, OrderStatus statusName) {
-        log.info("Изменение статуса заказа с id {} на статус {}", orderId, statusName);
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            String previousStatus = String.valueOf(order.getStatus());
-            order.setStatus(statusName);
-            orderRepository.save(order);
-            log.info("Статус заказа с id {} изменен на {}", orderId, statusName);
-            if (previousStatus.equals("Собран") && statusName.equals("Доставлен")) {
-                productService.purchase(order); //TODO: проверить после реализации метода purchase
+    public void updateOrderStatus(UUID orderId, Integer statusId) {
+        log.info("Изменение статуса заказа с id {} на статус {}", orderId, statusId);
+        Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(statusId);
+        if (orderStatusOptional.isPresent()) {
+            OrderStatus orderStatus = orderStatusOptional.get();
+            Optional<Order> optionalOrder = orderRepository.findById(orderId);
+            if (optionalOrder.isPresent()) {
+                Order order = optionalOrder.get();
+                String previousStatus = order.getStatus().getName();
+                order.setStatus(orderStatus);
+                orderRepository.save(order);
+                log.info("Статус заказа с id {} изменен на {}", orderId, orderStatus.getName());
+                if (previousStatus.equals("Собран") && orderStatus.getName().equals("Доставлен")) {
+                    //productService.purchase(order); //TODO: проверить после реализации метода purchase
+                }
+            } else {
+                throw new NotFoundException("Заказ с id " + orderId + " не найден");
             }
         } else {
-            throw new NotFoundException("Заказ с id " + orderId + " не найден");
+            throw new NotFoundException("Статус с id " + statusId + " не найден");
         }
     }
 

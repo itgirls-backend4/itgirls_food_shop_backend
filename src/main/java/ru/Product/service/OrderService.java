@@ -23,5 +23,5 @@ public interface OrderService {
 
     void removeProductFromOrder(UUID orderId, UUID productId);
 
-    void updateOrderStatus(UUID orderId, OrderStatus statusName);
+    void updateOrderStatus(UUID orderId, Integer statusId);
 }
