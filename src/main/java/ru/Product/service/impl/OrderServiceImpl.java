@@ -186,6 +186,10 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public void updateOrderStatus(UUID orderId, String status) {
+    }
+
     private Set<OrderedProduct> getOrderedProducts(Cart cart, Order order) {
         log.info("Определение продуктов из корзины");
         Set<CartItem> cartItems = cart.getCartItems();
