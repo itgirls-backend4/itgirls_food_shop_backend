@@ -7,11 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.Product.dto.OrderDto;
 import ru.Product.dto.OrderGetAllDto;
-import ru.Product.model.OrderStatus;
 import ru.Product.service.OrderService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -53,8 +51,7 @@ public class OrderController {
     public void updateProductQuantityInOrder(
             @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
             @Parameter(description = "id продукта", required = true) @RequestParam(value = "productId") String productId,
-            @Parameter(description = "количество продуктов", required = true) @RequestParam(value = "quantity") int quantity
-    ) {
+            @Parameter(description = "количество продуктов", required = true) @RequestParam(value = "quantity") int quantity) {
         orderService.updateOrderItemQuantity(UUID.fromString(orderId), UUID.fromString(productId), quantity);
     }
 
@@ -63,8 +60,7 @@ public class OrderController {
     public void addProductToOrder(
             @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
             @Parameter(description = "id продукта", required = true) @RequestParam(value = "productId") String productId,
-            @Parameter(description = "количество продуктов", required = true) @RequestParam(value = "quantity") int quantity
-    ) {
+            @Parameter(description = "количество продуктов", required = true) @RequestParam(value = "quantity") int quantity) {
         orderService.addProductToOrder(UUID.fromString(orderId), UUID.fromString(productId), quantity);
     }
 
@@ -72,8 +68,7 @@ public class OrderController {
     @Operation(summary = "Удаление продукта из заказа")
     public void removeProductFromOrder(
             @Parameter(description = "id заказа", required = true) @RequestParam(value = "orderId") String orderId,
-            @Parameter(description = "id продукта", required = true) @RequestParam(value = "productId") String productId
-    ) {
+            @Parameter(description = "id продукта", required = true) @RequestParam(value = "productId") String productId) {
         orderService.removeProductFromOrder(UUID.fromString(orderId), UUID.fromString(productId));
     }
 
