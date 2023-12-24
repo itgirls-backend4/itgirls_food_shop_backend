@@ -199,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
             log.info("Статус заказа с id {} изменён на {}", orderId, status);
             if (previousStatus.equals("Собран") && status.equals("Доставлен")) {
-                productService.purchase(order);
+                productService.purchase(order); //TODO проверить после реализации метода purchase
             }
         } else {
             throw new NotFoundException("Заказ с id " + orderId + " не найден");
