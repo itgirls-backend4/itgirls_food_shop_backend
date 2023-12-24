@@ -195,6 +195,7 @@ public class OrderServiceImpl implements OrderService {
             String previousStatus = String.valueOf(order.getStatus());
             order.setStatus(statusName);
             orderRepository.save(order);
+            log.info("Статус заказа с id {} изменен на {}", orderId, statusName);
         }
     }
 
