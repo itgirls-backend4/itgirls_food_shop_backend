@@ -3,10 +3,13 @@ package ru.Product.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
+import ru.Product.dto.CategoryDto;
 import ru.Product.dto.ProductCreateDto;
 import ru.Product.dto.ProductDto;
 import ru.Product.dto.ProductUpdateDto;
@@ -52,16 +55,32 @@ public class ProductController {
 
     @PostMapping("/create")
     @Operation(summary = "Создание нового продукта")
-    public ProductDto createProduct(@RequestBody @Valid ProductCreateDto productCreateDto) {
-        return productService.createProduct(productCreateDto);
+    public ResponseEntity createProduct(@RequestBody @Valid ProductCreateDto productCreateDto) {
+        try {
+            ProductDto createdProduct = productService.createProduct(productCreateDto);
+            return ResponseEntity.ok(createdProduct);
+        } catch (EntityExistsException e) {
+            return ResponseEntity.badRequest().body("Такой продукт уже существует");
+        }
+        catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body("Такой категории не существует");
+        }
     }
 
     @PutMapping("/update")
     @Operation(summary = "Обновление продукта")
-    public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid ProductUpdateDto productUpdateDto) {
+    public ResponseEntity updateProduct(@RequestBody @Valid ProductUpdateDto productUpdateDto) {
         UUID productId = productUpdateDto.getId();
-        ProductDto updatedProduct = productService.updateProduct(productId, productUpdateDto);
-        return ResponseEntity.ok(updatedProduct);
+        try {
+            ProductDto updatedProduct = productService.updateProduct(productId, productUpdateDto);
+            return ResponseEntity.ok(updatedProduct);
+        }
+        catch (EntityExistsException e) {
+            return ResponseEntity.badRequest().body("Такой продукт уже существует");
+        }
+        catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body("Такой категории не существует");
+        }
     }
 
     @DeleteMapping("/delete")
