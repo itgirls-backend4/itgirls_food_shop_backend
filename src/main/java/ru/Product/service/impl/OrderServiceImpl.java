@@ -201,6 +201,8 @@ public class OrderServiceImpl implements OrderService {
             if (previousStatus.equals("Собран") && statusName.equals("Доставлен")) {
                 productService.purchase(order); //TODO: проверить после реализации метода purchase
             }
+        } else {
+            throw new NotFoundException("Заказ с id " + orderId + " не найден");
         }
     }
 
