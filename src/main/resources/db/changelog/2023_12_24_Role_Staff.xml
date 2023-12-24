@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="insert-staff-into-roles" author="Mariia_Buruk">
+        <sql>
+            insert into role values
+            (uuid_generate_v4(),'ROLE_STAFF');
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-user-roles-table" author="Mariia_Buruk">
+        <sql>
+            INSERT INTO "user"("id","name", email, phone, address, password) values
+            (uuid_generate_v4(),
+            'Staff',
+            'staff@mail.ru',
+            '',
+            '',
+            '$2a$10$cV5.0Ok8qTMJCPGkTHFXLuC3L.Bvp.hX0ZWKhBMN4QYmkJr9qRKmm'
+            );
+
+            INSERT INTO user_role (user_id, role_id)
+            Select
+            (select "user".id from "user" where "user".email = 'staff@mail.ru'),
+            (select "role".id from "role" where "role".name = 'ROLE_STAFF');
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>
