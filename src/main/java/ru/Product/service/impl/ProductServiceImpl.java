@@ -179,14 +179,19 @@ public class ProductServiceImpl implements ProductService {
                 log.info("Количество товара уже ноль");
             } else if ((existingProduct.getQuantity() - amount) < 0) {
                 existingProduct.setQuantity(0);
+//                productRepository.save(existingProduct);
                 log.info("Количество товара меньше купленного. Теперь количество - 0");
             } else {
                 existingProduct.setQuantity(existingProduct.getQuantity() - amount);
                 log.info("Количество товара обновлено на " + amount + ". Теперь количество - " +
                         existingProduct.getQuantity());
+//                productRepository.save(existingProduct);
             }
+            productRepository.save(existingProduct);
         } else {
             log.info("Данного продукта не существует или покупка отрицательного количества продуктов");
         }
+
+//        updateProduct(productId, productRepository. existingProduct);
     }
 }

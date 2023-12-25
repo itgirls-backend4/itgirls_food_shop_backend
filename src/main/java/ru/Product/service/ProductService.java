@@ -22,4 +22,6 @@ public interface ProductService {
     void deleteProduct(UUID productId);
 
     Map<UUID, Integer> getProductsInStock(List<UUID> productIds);
+
+    public void purchaseItem(UUID productId, Integer amount);
 }
