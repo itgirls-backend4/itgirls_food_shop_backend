@@ -16,6 +16,7 @@ import ru.Product.service.ProductService;
 
 import java.util.*;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getOne(UUID productId) {
+
         log.info("Поиск продукта с id: {}", productId);
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
@@ -188,5 +190,26 @@ public class ProductServiceImpl implements ProductService {
                 .quantity(product.getQuantity())
                 .categoryName(category.getName())
                 .build();
+    }
+
+    public void purchaseItem(UUID productId, Integer amount) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent() & amount > 0) {
+            Product existingProduct = optionalProduct.get();
+            if (existingProduct.getQuantity() == 0) {
+                log.info("Количество товара уже ноль");
+            } else if ((existingProduct.getQuantity() - amount) < 0) {
+                existingProduct.setQuantity(0);
+                log.info("Количество товара меньше купленного. Теперь количество - 0");
+            } else {
+                existingProduct.setQuantity(existingProduct.getQuantity() - amount);
+                log.info("Количество товара обновлено на " + amount + ". Теперь количество - " +
+                        existingProduct.getQuantity());
+            }
+            productRepository.save(existingProduct);
+        } else {
+            log.info("Данного продукта не существует или покупка отрицательного количества продуктов");
+        }
+
     }
 }
