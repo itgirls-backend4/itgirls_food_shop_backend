@@ -33,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderStatusRepository orderStatusRepository;
     private final ProductService productService;
 
-
     @Override
     public List<OrderGetAllDto> getAllOrdersByUserId(UUID id) {
         log.info("Поиск всех заказов пользователя с id: {}", id);
@@ -202,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
                 orderRepository.save(order);
                 log.info("Статус заказа с id {} изменен на {}", orderId, orderStatus.getName());
                 if (previousStatus.equals("Собран") && orderStatus.getName().equals("Доставлен")) {
-                    //productService.purchase(order); //TODO: проверить после реализации метода purchase
+                    order.getOrderedProducts().forEach(item -> productService.purchaseItem(item.getProduct().getId(), item.getQuantity()));
                 }
             } else {
                 throw new NotFoundException("Заказ с id " + orderId + " не найден");

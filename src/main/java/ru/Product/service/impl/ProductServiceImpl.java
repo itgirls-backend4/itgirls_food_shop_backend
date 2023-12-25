@@ -16,7 +16,6 @@ import ru.Product.service.ProductService;
 
 import java.util.*;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -99,15 +98,16 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityExistsException("Product with name " + name + " already  exists");
         else {
             Category optionalCategory = categoryRepository.findByName(productCreateDto.getCategoryName());
-            if (optionalCategory==null)
+            if (optionalCategory == null)
                 throw new NotFoundException("Category with name " + name + " not found");
-                else{
-                    Product newProduct = convertToProductEntity(productCreateDto);
-                    Product savedProduct = productRepository.save(newProduct);
-                    Category category = savedProduct.getCategory();
-                    log.info("Продукт создан: {}", savedProduct);
-                    return convertToProductDto(savedProduct, category);
-    }}
+            else {
+                Product newProduct = convertToProductEntity(productCreateDto);
+                Product savedProduct = productRepository.save(newProduct);
+                Category category = savedProduct.getCategory();
+                log.info("Продукт создан: {}", savedProduct);
+                return convertToProductDto(savedProduct, category);
+            }
+        }
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
                 throw new EntityExistsException("Product with name " + newNameProduct + " already  exists");
             else {
                 Category optionalCategory = categoryRepository.findByName(productUpdateDto.getCategoryName());
-                if (optionalCategory==null)
+                if (optionalCategory == null)
                     throw new NotFoundException("Category with name " + productUpdateDto.getCategoryName() + " not found");
                 else {
                     Product existingProduct = optionalProduct.get();
@@ -136,11 +136,12 @@ public class ProductServiceImpl implements ProductService {
                     log.info("Продукт обновлён: {}", updatedProduct);
                     Category category = existingProduct.getCategory();
                     return convertToProductDto(updatedProduct, category);
-                }}
-            } else {
-                log.error("Продукт не найден с id: {}", productId);
-                throw new NotFoundException("Продукт не найден с id: " + productId);
+                }
             }
+        } else {
+            log.error("Продукт не найден с id: {}", productId);
+            throw new NotFoundException("Продукт не найден с id: " + productId);
+        }
     }
 
     @Override
@@ -210,6 +211,5 @@ public class ProductServiceImpl implements ProductService {
         } else {
             log.info("Данного продукта не существует или покупка отрицательного количества продуктов");
         }
-
     }
 }
