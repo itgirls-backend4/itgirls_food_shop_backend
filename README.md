@@ -13,6 +13,7 @@ https://docs.google.com/document/d/1V4UYfS_FoE7TKZPsxRnOKgmIUOVC6PAPfckyHo0jjow/
 Методы доступны для авторизованного пользователя.
 
 Тестовый профиль:
+
   email: user@mail.ru   
   password: user
   
@@ -27,6 +28,7 @@ https://docs.google.com/document/d/1LKvCVMKkwgnhYm18X58gwe39EMCXJaVhlxNKXYNVSfM/
 Методы доступны авторизованному пользователю с ролью "Сотрудник"(staff).
 
 Тестовый профиль:
+
   email: staff@mail.ru 
   password: staff
 
@@ -57,6 +59,7 @@ https://docs.google.com/document/d/1LKvCVMKkwgnhYm18X58gwe39EMCXJaVhlxNKXYNVSfM/
 Пользователю с ролью Admin доступны все методы:
 
 Тестовый профиль:
+
 email: admin@mail.ru
 password: admin
 
